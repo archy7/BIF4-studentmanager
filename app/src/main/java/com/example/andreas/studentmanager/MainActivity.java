@@ -1,5 +1,6 @@
 package com.example.andreas.studentmanager;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.andreas.studentmanager.models.Prio;
 import com.example.andreas.studentmanager.models.Termin;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -16,10 +18,11 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Termin[] terminArray = null;
+    private ArrayList<Termin> terminArrayList = null;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -40,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
          */
 
         //Schritt 1
-        this.terminArray = this.schummeln(); //--> ändern in importTermineFromFileSystem();
+        this.terminArrayList = this.schummeln2(); //--> ändern in importTermineFromFileSystem();
 
 
         //Schritt 2
         //2.1
-        ArrayAdapter<Termin> adapter = new ArrayAdapter<Termin>(this,
-                android.R.layout.simple_list_item_1, this.terminArray);
+        ArrayAdapter<Termin> adapter = new ArrayAdapter(this,
+                android.R.layout.simple_list_item_1, this.terminArrayList);
         //2.2
         ListView listView = (ListView) findViewById(R.id.dutyListView);
         listView.setAdapter(adapter);
@@ -66,7 +69,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private Termin[] importTermineFromFileSystem() {
+    private ArrayList<Termin> schummeln2(){
+        ArrayList<Termin> returnList = new ArrayList<>();
+        Termin termin1 = new Termin("CGE Projekt", 4, 40.5, new LocalDate(2016, 6, 24), new LocalTime(23, 55));
+        Termin termin2 = new Termin("SWE Projekt", 5, 80, new LocalDate(2016, 6, 22), new LocalTime(23, 55));
+        Termin termin3 = new Termin("MDP Projekt", 3, 30, new LocalDate(2016, 6, 13), new LocalTime(23, 55));
+
+        returnList.add(termin1);
+        returnList.add(termin2);
+        returnList.add(termin3);
+
+        return returnList;
+    }
+
+    private ArrayList<Termin> importTermineFromFileSystem() {
         //TODO : IMPLEMENT THIS
         return null;
     }
@@ -75,7 +91,29 @@ public class MainActivity extends AppCompatActivity {
      * Opens new Activity to add a Duty to the list
      */
     public void addDuty(View view) {
-        //neue activiy aufmachen
+        Intent intent = new Intent(this, AddDutyActivity.class);
+        startActivityForResult(intent, 0);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent result) {
+        super.onActivityResult(requestCode, resultCode, result);
+        //Retrieve data in the intent
+        String name = result.getStringExtra("name");
+        String notes = result.getStringExtra("notes");
+        final Calendar c = Calendar.getInstance();
+        int year = result.getIntExtra("year", c.get(Calendar.YEAR));
+        int month = result.getIntExtra("month", 1);
+        int day = result.getIntExtra("day", 1);
+        int hour = result.getIntExtra("hour", 23);
+        int minute = result.getIntExtra("minute", 55);
+        double effort = result.getDoubleExtra("effort", 10);
+        int priority = result.getIntExtra("prio", Prio.NEUTRAL.getValue());
+
+        Termin newTermin = new Termin(name, priority, effort, new LocalDate(year, month, day), new LocalTime(hour, minute));
+
+        this.terminArrayList.add(newTermin);
     }
 
     @Override
