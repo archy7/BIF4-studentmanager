@@ -10,72 +10,101 @@
     tools:context="com.example.andreas.studentmanager.AddDutyActivity">
 
     <TextView
+        android:id="@+id/addDutyTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add new Duty:"/>
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id = "@+id/nameEditText"
-        android:text="Name"/>
-    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/addDutyTextView"
+        android:layout_alignParentLeft="true"
+        android:hint="Name"/>
+    <EditText
         android:id = "@+id/effortEditText"
-        android:text="Effort in hours"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameEditText"
+        android:layout_alignParentLeft="true"
+        android:hint="Effort in hours"/>
     <TextView
+        android:id="@+id/priorityTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/effortEditText"
+        android:layout_alignParentLeft="true"
         android:text="Priority"/>
     <Spinner
+        android:id="@+id/prioSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/prioSpinner">
-        <!-- die Möglichkeiten aus der Enum Prio in onCreate der Activity fischen-->
+        android:layout_below="@id/effortEditText"
+        android:layout_toRightOf="@id/priorityTextView">
+        <!-- die Möglichkeiten aus der Enum Prio in onCreate() der Activity fischen-->
     </Spinner>
     <TextView
+        android:id="@+id/dateOfAppointmentTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/prioSpinner"
+        android:layout_alignParentLeft="true"
         android:text="Date of appointment"/>
     <TextView
+        android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/dateTextView"
+        android:layout_below="@id/prioSpinner"
+        android:layout_toRightOf="@id/dateOfAppointmentTextView"
         android:text="00:00"/> <!-- set this in oncCreate()-->
     <Button
+        android:id="@+id/showDatePickerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/prioSpinner"
+        android:layout_toRightOf="@id/dateTextView"
         android:text="Set Date"
-        android:id="@+id/showDatePickerButton"
         android:onClick="showDatePickerDialog"/>
     <TextView
+        android:id="@+id/timeOfAppointmentTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/showDatePickerButton"
+        android:layout_alignParentLeft="true"
         android:text="Time of appointment"/>
     <TextView
+        android:id="@+id/timeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/timeTextView"
+        android:layout_below="@id/showDatePickerButton"
+        android:layout_toRightOf="@id/timeOfAppointmentTextView"
         android:text="01.01.2016"/> <!-- set this in oncCreate()-->
     <Button
+        android:id="@+id/showTimePickerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/showDatePickerButton"
+        android:layout_toRightOf="@id/timeTextView"
         android:text="Set Time"
-        android:id="@+id/showTimePickerButton"
         android:onClick="showTimePickerDialog"/>
 
     <TextView
+        android:id="@+id/notesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/showTimePickerButton"
         android:text="Notes"/>
     <EditText
+        android:id="@+id/notesEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/notesEditText"/>
+        android:layout_below="@id/notesTextView"/>
     <Button
+        android:id="@+id/addNewDutyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/addNewDutyButton"
+        android:layout_below="@id/notesEditText"
+        android:text="Add new Duty"
         android:onClick="addNewDuty"/>
 
 

@@ -4,10 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,12 +15,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.example.andreas.studentmanager.models.Prio;
 import com.example.andreas.studentmanager.pickers.DatePickerFragment;
 import com.example.andreas.studentmanager.pickers.TimePickerFragment;
 
-import org.w3c.dom.Text;
-
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -31,7 +26,7 @@ import java.util.Calendar;
  */
 public class AddDutyActivity extends FragmentActivity implements TimePickerDialog.OnTimeSetListener,
                                                                 DatePickerDialog.OnDateSetListener,
-                                                                AdapterView.OnItemSelectedListener {
+        AdapterView.OnItemSelectedListener{//, AdapterView.OnItemSelectedListener {
 
     private Spinner prioSpinner;
     private EditText nameEditText;
@@ -45,7 +40,7 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
     private String name;
     private String notes;
     private double effort;
-    private Prio prio;
+    private int prio;
     //Time
     private int pickerHour = 0;
     private int pickerMin = 0;
@@ -70,11 +65,12 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
 
         //populate Spinner
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, Prio.getValuesAsIntegerArray());
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, this.prioSchummeln()); //prioSchummeln() -> hier sollten die Integers aus der Konfiguration geholt werden
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         prioSpinner.setAdapter(adapter);
+        prioSpinner.setOnItemSelectedListener(this);
 
         //set text of TextViews for Time and Date
         Calendar c = Calendar.getInstance();
@@ -99,7 +95,16 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
+    private ArrayList<Integer> prioSchummeln(){
+        ArrayList<Integer> integerArrayList = new ArrayList<>();
+        integerArrayList.add(1);
+        integerArrayList.add(2);
+        integerArrayList.add(3);
+        integerArrayList.add(4);
+        integerArrayList.add(5);
 
+        return integerArrayList;
+    }
 
     public void addNewDuty(View view){
         /**
@@ -116,7 +121,7 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra("name", this.nameEditText.getText().toString());
-        resultIntent.putExtra("prio", this.prio.getValue());
+        resultIntent.putExtra("prio", this.prio);
         resultIntent.putExtra("effort", Double.parseDouble(this.effortEditText.getText().toString()));
         resultIntent.putExtra("hour", this.pickerHour);
         resultIntent.putExtra("minute", this.pickerMin);
@@ -125,7 +130,7 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
         resultIntent.putExtra("day", this.pickerDay);
         resultIntent.putExtra("notes", this.notesEditText.getText().toString());
 
-        setResult(0,resultIntent);
+        setResult(RESULT_OK,resultIntent);
         finish();
 
     }
@@ -154,11 +159,30 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
     }*/
 
     @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+
+        setResult(RESULT_CANCELED,resultIntent);
+        finish();
+    }
+
+    @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         pickerHour = hourOfDay;
         pickerMin = minute;
 
-        //TODO: set text values to represent the chosen values
+        StringBuilder sb = new StringBuilder();
+        if(pickerHour < 10){
+            sb.append(0);
+        }
+        sb.append(pickerHour);
+        sb.append(":");
+        if(pickerMin < 10){
+            sb.append(0);
+        }
+        sb.append(pickerMin);
+
+        this.timeTextView.setText(sb.toString());
     }
 
     @Override
@@ -167,14 +191,27 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
         pickerMonth = month;
         pickerYear = year;
 
-        //TODO: set text values to represent the chosen values
+        StringBuilder sb = new StringBuilder();
+        if(pickerDay < 10){
+            sb.append(0);
+        }
+        sb.append(pickerDay);
+        sb.append(".");
+        if(pickerMonth < 10){
+            sb.append(0);
+        }
+        sb.append(pickerMonth);
+        sb.append(".");
+        sb.append(pickerYear);
+
+        this.dateTextView.setText(sb.toString());
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //Enum aus Prio fischen
         Integer integer = (Integer) parent.getItemAtPosition(position);
-        this.prio = Prio.makePrio(integer);
+        this.prio = integer;
     }
 
     @Override
@@ -182,3 +219,15 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
         //Nothing
     }
 }
+
+
+/*new AlertDialog.Builder(this)
+                .setTitle("Really Exit?")
+                .setMessage("Are you sure you want to exit?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new OnClickListener() {
+
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        WelcomeActivity.super.onBackPressed();
+                    }
+                }).create().show();*/

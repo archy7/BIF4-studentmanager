@@ -8,14 +8,14 @@ import java.util.ArrayList;
 /**
  * Created by Andreas on 03.06.2016.
  */
-public class Termin {
+public class Duty {
 
     private String betreff;
     private String bemerkung;
-    private Prio prio;
+    private int prio;
     private double aufwand;
 
-    private ArrayList<Termin> zwischenTermine;
+    private ArrayList<Duty> zwischenTermine;
 
     private LocalDate eingabeTag;
     private LocalTime eingabeZeit;
@@ -23,13 +23,13 @@ public class Termin {
     private LocalDate abgabeTag;
     private LocalTime abgabeZeit;
 
-    private Termin(){
+    private Duty(){
 
     }
 
-    public Termin(String betreff, int newprio, double aufwand, LocalDate abgabeTag, LocalTime abgabeZeit){
+    public Duty(String betreff, int newprio, double aufwand, LocalDate abgabeTag, LocalTime abgabeZeit){
         this.betreff = betreff;
-        this.setPrio(newprio);
+        this.prio = newprio;
         this.aufwand = aufwand;
         this.abgabeTag = abgabeTag;
         this.abgabeZeit = abgabeZeit;
@@ -54,20 +54,12 @@ public class Termin {
         this.bemerkung = bemerkung;
     }
 
-    public Prio getPrio(){
+    public int getPrio(){
         return prio;
     }
 
-    public void setPrio(Prio newprio){
-        this.prio = newprio;
-    }
-
     public void setPrio(int newprio){
-        for(Prio prio : Prio.values()){
-            if(prio.getValue() == newprio){
-                this.prio = prio;
-            }
-        }
+        this.prio = newprio;
     }
 
     public double getAufwand(){
@@ -78,11 +70,11 @@ public class Termin {
         this.aufwand = aufwand;
     }
 
-    public ArrayList<Termin> getZwischenTermine() {
+    public ArrayList<Duty> getZwischenTermine() {
         return zwischenTermine;
     }
 
-    public void setZwischenTermine(ArrayList<Termin> zwischenTermine) {
+    public void setZwischenTermine(ArrayList<Duty> zwischenTermine) {
         this.zwischenTermine = zwischenTermine;
     }
 
@@ -113,6 +105,6 @@ public class Termin {
     @Override
     public String toString(){
         return this.betreff + " fällig am " + this.abgabeTag.toString() + ", um " + this.abgabeZeit + "\n"
-                + "Priorität: " +Integer.toString(this.prio.getValue()) + " Geschätzter Aufwand: " + Double.toString(this.aufwand) + " Stunden";
+                + "Priorität: " +Integer.toString(this.prio) + " Geschätzter Aufwand: " + Double.toString(this.aufwand) + " Stunden";
     }
 }
