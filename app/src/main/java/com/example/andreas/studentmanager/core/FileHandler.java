@@ -1,6 +1,7 @@
 package com.example.andreas.studentmanager.core;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import com.example.andreas.studentmanager.models.Duty;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
@@ -96,7 +98,7 @@ public class FileHandler {
          * Aktuelles File leeren
          */
         String filename = "duty"+duty.getDutyid()+".srl";
-        File f=new File(context.getFilesDir()+path, "");
+        File f=new File(context.getFilesDir()+path, filename);
         PrintWriter pw= null;
         try {
             pw = new PrintWriter(f);
@@ -117,8 +119,49 @@ public class FileHandler {
         f.delete();
     }
 
-    public void exportCSV(){
+    public void exportCSV(String filename, ArrayList<Duty> duties){
+        File root = Environment.getExternalStorageDirectory();
+        root.setReadable(true);
+        root.setWritable(true);
+        File myDir = new File(root.toString() + "/duties");
+        myDir.mkdirs();
+        String fname = filename+".csv";
+        File file = new File (myDir, fname);
+        //if (file.exists ()) file.delete ();
+        try {
+            FileWriter writer=new FileWriter(file.getAbsolutePath());
 
+            /*
+             * Header
+             */
+            writer.append("Subject,");
+            writer.append("Start Date,");
+            writer.append("Start Time,");
+            writer.append("End Date,");
+            writer.append("All Day Event,");
+            writer.append("Description,");
+            writer.append("Location,");
+            writer.append("Private\n");
+
+            /*
+             * Content
+             */
+            for(Duty d:duties){
+                writer.append(d.getBetreff()+",");
+                //formatieren
+                writer.append(d.getAbgabeTag()+",");
+                writer.append(",,,");
+                writer.append(d.getBemerkung()+",");
+                writer.append(",");
+                writer.append("TRUE\n");
+            }
+
+            writer.flush();
+            writer.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

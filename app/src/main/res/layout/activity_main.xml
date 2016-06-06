@@ -21,11 +21,26 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"></ListView>
 
-    <Button
-        android:id="@+id/addDutyButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Duty"
-        android:onClick="addDuty"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/addDutyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Add Duty"
+            android:onClick="addDuty"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Export"
+            android:id="@+id/export_button"
+            android:layout_marginLeft="160dp" />
+    </LinearLayout>
 
 </LinearLayout>

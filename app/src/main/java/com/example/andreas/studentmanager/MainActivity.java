@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Button;
 
 import com.example.andreas.studentmanager.core.FileHandler;
 import com.example.andreas.studentmanager.models.Duty;
@@ -17,6 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -37,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         FileHandler.getInstance().setContext(this);
 
+        Button exportButton = (Button) findViewById(R.id.export_button);
+        exportButton.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                export("testname");
+            }
+        });
+
         //custom
         /**
          *  Schritte:
@@ -46,8 +57,13 @@ public class MainActivity extends AppCompatActivity {
          */
 
         //Schritt 1
-        //this.dutyArrayList = this.schummeln2(); //--> ändern in importTermineFromFileSystem();
+        //this.schummeln2(); //--> ändern in importTermineFromFileSystem();
         this.dutyArrayList=FileHandler.getInstance().readDutiesFromFile();
+        this.removeTest(4);
+        this.removeTest(1);
+        Duty edit=dutyArrayList.get(0);
+        edit.setAufwand(9001);
+        FileHandler.getInstance().editDuty(edit);
 
         //Schritt 2
         //2.1
@@ -77,16 +93,30 @@ public class MainActivity extends AppCompatActivity {
         Duty duty1 = new Duty(0, "CGE Projekt", 4, 40.5, new LocalDate(2016, 6, 24), new LocalTime(23, 55));
         Duty duty2 = new Duty(1, "SWE Projekt", 5, 80, new LocalDate(2016, 6, 22), new LocalTime(23, 55));
         Duty duty3 = new Duty(2, "MDP Projekt", 3, 30, new LocalDate(2016, 6, 13), new LocalTime(23, 55));
+        Duty duty4 = new Duty(4, "MDP4 Projekt", 3, 30, new LocalDate(2016, 6, 13), new LocalTime(23, 55));
 
         returnList.add(duty1);
         returnList.add(duty2);
         returnList.add(duty3);
+        returnList.add(duty4);
 
         FileHandler.getInstance().writeDuty(duty1);
         FileHandler.getInstance().writeDuty(duty2);
         FileHandler.getInstance().writeDuty(duty3);
+        FileHandler.getInstance().writeDuty(duty4);
 
         return returnList;
+    }
+
+    private void removeTest(int id){
+        Duty d=new Duty();
+        d.setDutyid(id);
+        dutyArrayList.remove(d);
+        FileHandler.getInstance().deleteDuty(id);
+    }
+
+    private void export(String filename){
+        FileHandler.getInstance().exportCSV(filename, dutyArrayList);
     }
 
     private ArrayList<Duty> importDutiesFromFileSystem() {

@@ -11,6 +11,8 @@ import java.util.ArrayList;
  */
 public class Duty implements Serializable{
 
+    static final long serialVersionUID =1L;
+
     private int dutyid;
     private String betreff;
     private String bemerkung;
@@ -25,7 +27,7 @@ public class Duty implements Serializable{
     private LocalDate abgabeTag;
     private LocalTime abgabeZeit;
 
-    private Duty(){
+    public Duty(){
 
     }
 
@@ -122,6 +124,15 @@ public class Duty implements Serializable{
     public String toString(){
         return this.betreff + " fällig am " + this.abgabeTag.toString() + ", um " + this.abgabeZeit + "\n"
                 + "Priorität: " +Integer.toString(this.prio) + " Geschätzter Aufwand: " + Double.toString(this.aufwand) + " Stunden";
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (o instanceof Duty) {
+            Duty d = (Duty)o;
+            return (this.dutyid == d.dutyid);
+        }
+        return false;
     }
 
 }
