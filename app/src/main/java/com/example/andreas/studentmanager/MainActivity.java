@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.andreas.studentmanager.core.FileHandler;
 import com.example.andreas.studentmanager.models.Duty;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FileHandler.getInstance().setContext(this);
 
         //custom
         /**
@@ -44,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
          */
 
         //Schritt 1
-        this.dutyArrayList = this.schummeln2(); //--> ändern in importTermineFromFileSystem();
-
+        //this.dutyArrayList = this.schummeln2(); //--> ändern in importTermineFromFileSystem();
+        this.dutyArrayList=FileHandler.getInstance().readDutiesFromFile();
 
         //Schritt 2
         //2.1
@@ -72,13 +74,17 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Duty> schummeln2(){
         ArrayList<Duty> returnList = new ArrayList<>();
-        Duty duty1 = new Duty("CGE Projekt", 4, 40.5, new LocalDate(2016, 6, 24), new LocalTime(23, 55));
-        Duty duty2 = new Duty("SWE Projekt", 5, 80, new LocalDate(2016, 6, 22), new LocalTime(23, 55));
-        Duty duty3 = new Duty("MDP Projekt", 3, 30, new LocalDate(2016, 6, 13), new LocalTime(23, 55));
+        Duty duty1 = new Duty(0, "CGE Projekt", 4, 40.5, new LocalDate(2016, 6, 24), new LocalTime(23, 55));
+        Duty duty2 = new Duty(1, "SWE Projekt", 5, 80, new LocalDate(2016, 6, 22), new LocalTime(23, 55));
+        Duty duty3 = new Duty(2, "MDP Projekt", 3, 30, new LocalDate(2016, 6, 13), new LocalTime(23, 55));
 
         returnList.add(duty1);
         returnList.add(duty2);
         returnList.add(duty3);
+
+        FileHandler.getInstance().writeDuty(duty1);
+        FileHandler.getInstance().writeDuty(duty2);
+        FileHandler.getInstance().writeDuty(duty3);
 
         return returnList;
     }
@@ -120,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
             Duty newDuty = new Duty(name, priority, effort, new LocalDate(year, month, day), new LocalTime(hour, minute));
 
             this.dutyArrayList.add(newDuty);
+            FileHandler.getInstance().writeDuty(newDuty);
         }
         else if(resultCode == RESULT_CANCELED){
             //do nothing
