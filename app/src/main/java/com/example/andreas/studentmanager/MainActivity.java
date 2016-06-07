@@ -1,9 +1,14 @@
 package com.example.andreas.studentmanager;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -59,11 +64,11 @@ public class MainActivity extends AppCompatActivity {
         //Schritt 1
         //this.schummeln2(); //--> ändern in importTermineFromFileSystem();
         this.dutyArrayList=FileHandler.getInstance().readDutiesFromFile();
-        this.removeTest(4);
-        this.removeTest(1);
-        Duty edit=dutyArrayList.get(0);
-        edit.setAufwand(9001);
-        FileHandler.getInstance().editDuty(edit);
+        //this.removeTest(4);
+        //this.removeTest(1);
+        //Duty edit=dutyArrayList.get(0);
+        //edit.setAufwand(9001);
+        //FileHandler.getInstance().editDuty(edit);
 
         //Schritt 2
         //2.1
@@ -116,7 +121,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void export(String filename){
-        FileHandler.getInstance().exportCSV(filename, dutyArrayList);
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+            Log.e("Files", "Keine Permissions");
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            }else{
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9001);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 9001: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    FileHandler.getInstance().exportCSV("test", dutyArrayList);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     private ArrayList<Duty> importDutiesFromFileSystem() {

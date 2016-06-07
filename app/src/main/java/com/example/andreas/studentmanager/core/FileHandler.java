@@ -1,7 +1,10 @@
 package com.example.andreas.studentmanager.core;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.example.andreas.studentmanager.models.Duty;
@@ -120,48 +123,44 @@ public class FileHandler {
     }
 
     public void exportCSV(String filename, ArrayList<Duty> duties){
-        File root = Environment.getExternalStorageDirectory();
-        root.setReadable(true);
-        root.setWritable(true);
-        File myDir = new File(root.toString() + "/duties");
-        myDir.mkdirs();
-        String fname = filename+".csv";
-        File file = new File (myDir, fname);
-        //if (file.exists ()) file.delete ();
-        try {
-            FileWriter writer=new FileWriter(file.getAbsolutePath());
-
+            File root = Environment.getExternalStorageDirectory();
+            root.setReadable(true);
+            root.setWritable(true);
+            File myDir = new File(root.toString());
+            myDir.mkdirs();
+            String fname = filename + ".csv";
+            File file = new File(myDir, fname);
+            if (file.exists ()) file.delete ();
+            try {
+                FileWriter writer = new FileWriter(file.getAbsolutePath());
             /*
              * Header
              */
-            writer.append("Subject,");
-            writer.append("Start Date,");
-            writer.append("Start Time,");
-            writer.append("End Date,");
-            writer.append("All Day Event,");
-            writer.append("Description,");
-            writer.append("Location,");
-            writer.append("Private\n");
-
+                writer.append("Subject,");
+                writer.append("Start Date,");
+                writer.append("Start Time,");
+                writer.append("End Date,");
+                writer.append("All Day Event,");
+                writer.append("Description,");
+                writer.append("Location,");
+                writer.append("Private\n");
             /*
              * Content
              */
-            for(Duty d:duties){
-                writer.append(d.getBetreff()+",");
-                //formatieren
-                writer.append(d.getAbgabeTag()+",");
-                writer.append(",,,");
-                writer.append(d.getBemerkung()+",");
-                writer.append(",");
-                writer.append("TRUE\n");
+                for (Duty d : duties) {
+                    writer.append(d.getBetreff() + ",");
+                    //formatieren
+                    writer.append(d.getAbgabeTag() + ",");
+                    writer.append(",,,");
+                    writer.append(d.getBemerkung() + ",");
+                    writer.append(",");
+                    writer.append("TRUE\n");
+                }
+                writer.flush();
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            writer.flush();
-            writer.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }
