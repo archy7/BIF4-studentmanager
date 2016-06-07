@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
     private Duty selectedDuty = null;
 
     private ListView dutyListView;
+    private Button exportDutiesButton;
     private ArrayAdapter<Duty> dutyArrayAdapter;
 
 
@@ -56,14 +57,7 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
         setContentView(R.layout.activity_main);
         FileHandler.getInstance().setContext(this);
 
-        Button exportButton = (Button) findViewById(R.id.export_button);
-        exportButton.setOnClickListener( new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                export("testname");
-            }
-        });
+        this.exportDutiesButton = (Button) findViewById(R.id.exportDutiesButton);
 
         //custom
         /**
@@ -74,8 +68,7 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
          */
 
         //Schritt 1
-        //this.schummeln2(); //--> ändern in importTermineFromFileSystem();
-        this.dutyArrayList=FileHandler.getInstance().readDutiesFromFile();
+        this.dutyArrayList=this.importDutiesFromFileSystem();
 
         //Schritt 2
         //2.1
@@ -112,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
     }
 
 
-    private void export(String filename){
+    public void exportDutiesToFileSystem(View view){
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
             Log.e("Files", "Keine Permissions");
@@ -150,8 +143,7 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
     }
 
     private ArrayList<Duty> importDutiesFromFileSystem() {
-        //TODO : IMPLEMENT THIS
-        return null;
+        return FileHandler.getInstance().readDutiesFromFile();
     }
 
     /**
@@ -164,11 +156,6 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
 
     public void openSettingsActivity(View view) {
         //für Andi und seine Settings Dinge
-    }
-
-    private void exportDutiesToFileSystem(){
-        //TODO: implement this
-
     }
 
     @Override
@@ -239,10 +226,14 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
         this.dutyArrayList.get(index).setAbgabeZeit(new LocalTime(result.getIntExtra("hour", 0), result.getIntExtra("minute", 0)));
         this.dutyArrayList.get(index).setBemerkung(result.getStringExtra("notes"));
 
+        this.dutyArrayAdapter.notifyDataSetChanged();
+
+        FileHandler.getInstance().editDuty(this.dutyArrayList.get(index));
     }
 
     protected void deleteDuty(Intent result){
         this.dutyArrayAdapter.remove(this.selectedDuty);
+        FileHandler.getInstance().deleteDuty(this.selectedDuty.getDutyid());
         this.selectedDuty = null;
     }
 

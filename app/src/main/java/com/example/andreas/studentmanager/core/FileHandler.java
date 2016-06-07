@@ -118,7 +118,7 @@ public class FileHandler {
 
     public void deleteDuty(int dutyid){
         String filename = "duty"+dutyid+".srl";
-        File f=new File(context.getFilesDir()+path, "");
+        File f=new File(context.getFilesDir()+path, filename);
         f.delete();
     }
 

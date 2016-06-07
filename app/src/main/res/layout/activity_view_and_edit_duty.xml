@@ -9,45 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ViewAndEditDutyActivity">
 
-<!--    <TextView
-        android:id="@+id/VaENameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name of duty:"/>
-
-    <EditText
-        android:id="@+id/VaENameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/VaENameTextView"/>
-
-    <TextView
-        android:id="@+id/VaEEffortTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/VaENameEditText"
-        android:text="Estimated effort:"/>
-
-    <EditText
-        android:id="@+id/VaEEffortEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/VaEEffortTextView"/>
-
-    <TextView
-        android:id="@+id/VaEPriorityTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/VaEEffortEditText"
-        android:text="Priority:"/>
-
-    <TextView
-        android:id="@+id/VaEActualPriorityTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/VaEPriorityTextView"/>
-
--->
     <TextView
         android:id="@+id/VaEAddDutyTextView"
         android:layout_width="match_parent"
@@ -146,14 +107,14 @@
         android:text="Save changes"
         android:onClick="editDuty"/>
 
-    <Button
+    <!--<Button
         android:id="@+id/addSubDutyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/VaENotesEditText"
         android:layout_toRightOf="@id/VaEAddNewDutyButton"
         android:text="Add Sub Duty"
-        android:onClick="addSubDuty"/>
+        android:onClick="addSubDuty"/> -->
 
     <Button
         android:id="@+id/deleteDutyButton"

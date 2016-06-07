@@ -35,12 +35,13 @@
             android:onClick="addDuty"/>
 
         <Button
+            android:id="@+id/exportDutiesButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_marginLeft="160dp"
             android:text="Export"
-            android:id="@+id/export_button"
-            android:layout_marginLeft="160dp" />
+            android:onClick="" />
     </LinearLayout>
 
     <Button
