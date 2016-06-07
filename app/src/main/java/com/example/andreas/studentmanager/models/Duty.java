@@ -86,11 +86,11 @@ public class Duty {
         this.abgabeTag = abgabeTag;
     }
 
-    public LocalTime getTime() {
+    public LocalTime getAbgabeZeit() {
         return abgabeZeit;
     }
 
-    public void setTime(LocalTime abgabeZeit) {
+    public void setAbgabeZeit(LocalTime abgabeZeit) {
         this.abgabeZeit = abgabeZeit;
     }
 

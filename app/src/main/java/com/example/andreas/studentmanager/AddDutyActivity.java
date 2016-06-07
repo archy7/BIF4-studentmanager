@@ -28,26 +28,26 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
                                                                 DatePickerDialog.OnDateSetListener,
         AdapterView.OnItemSelectedListener{//, AdapterView.OnItemSelectedListener {
 
-    private Spinner prioSpinner;
-    private EditText nameEditText;
-    private EditText effortEditText;
-    private TextView dateTextView;
-    private Button showDatePickerButton;
-    private Button showTimePickerButton;
-    private TextView timeTextView;
-    private EditText notesEditText;
+    protected Spinner prioSpinner;
+    protected EditText nameEditText;
+    protected EditText effortEditText;
+    protected TextView dateTextView;
+    protected Button showDatePickerButton;
+    protected Button showTimePickerButton;
+    protected TextView timeTextView;
+    protected EditText notesEditText;
 
-    private String name;
-    private String notes;
-    private double effort;
-    private int prio;
+    protected String name;
+    protected String notes;
+    protected double effort;
+    protected int prio;
     //Time
-    private int pickerHour = 0;
-    private int pickerMin = 0;
+    protected int pickerHour = 0;
+    protected int pickerMin = 0;
     //Date
-    private int pickerDay = 0;
-    private int pickerMonth = 0;
-    private int pickerYear = 0;
+    protected int pickerDay = 0;
+    protected int pickerMonth = 0;
+    protected int pickerYear = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
-    private ArrayList<Integer> prioSchummeln(){
+    protected ArrayList<Integer> prioSchummeln(){
         ArrayList<Integer> integerArrayList = new ArrayList<>();
         integerArrayList.add(1);
         integerArrayList.add(2);
@@ -209,7 +209,6 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        //Enum aus Prio fischen
         Integer integer = (Integer) parent.getItemAtPosition(position);
         this.prio = integer;
     }
