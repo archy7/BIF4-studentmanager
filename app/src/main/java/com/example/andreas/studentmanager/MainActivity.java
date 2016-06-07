@@ -1,14 +1,21 @@
 package com.example.andreas.studentmanager;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Button;
 
+import com.example.andreas.studentmanager.core.FileHandler;
 import com.example.andreas.studentmanager.models.Duty;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -18,6 +25,7 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -46,6 +54,16 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FileHandler.getInstance().setContext(this);
+
+        Button exportButton = (Button) findViewById(R.id.export_button);
+        exportButton.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                export("testname");
+            }
+        });
 
         //custom
         /**
@@ -56,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
          */
 
         //Schritt 1
-        this.dutyArrayList = this.schummeln2(); //--> ändern in importTermineFromFileSystem();
-
+        //this.schummeln2(); //--> ändern in importTermineFromFileSystem();
+        this.dutyArrayList=FileHandler.getInstance().readDutiesFromFile();
 
         //Schritt 2
         //2.1
@@ -72,28 +90,63 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    private Duty[] schummeln() {
-        Duty duty1 = new Duty("CGE Projekt", 4, 40.5, new LocalDate(2016, 6, 24), new LocalTime(23, 55));
-        Duty duty2 = new Duty("SWE Projekt", 5, 80, new LocalDate(2016, 6, 22), new LocalTime(23, 55));
-        Duty duty3 = new Duty("MDP Projekt", 3, 30, new LocalDate(2016, 6, 13), new LocalTime(23, 55));
-
-        Duty[] returnArray = {duty1, duty2, duty3};
-
-        return returnArray;
-
-    }
 
     private ArrayList<Duty> schummeln2(){
         ArrayList<Duty> returnList = new ArrayList<>();
-        Duty duty1 = new Duty("CGE Projekt", 4, 40.5, new LocalDate(2016, 6, 24), new LocalTime(23, 55));
-        Duty duty2 = new Duty("SWE Projekt", 5, 80, new LocalDate(2016, 6, 22), new LocalTime(23, 55));
-        Duty duty3 = new Duty("MDP Projekt", 3, 30, new LocalDate(2016, 6, 13), new LocalTime(23, 55));
+        Duty duty1 = new Duty(0, "CGE Projekt", 4, 40.5, new LocalDate(2016, 6, 24), new LocalTime(23, 55));
+        Duty duty2 = new Duty(1, "SWE Projekt", 5, 80, new LocalDate(2016, 6, 22), new LocalTime(23, 55));
+        Duty duty3 = new Duty(2, "MDP Projekt", 3, 30, new LocalDate(2016, 6, 13), new LocalTime(23, 55));
+        Duty duty4 = new Duty(4, "MDP4 Projekt", 3, 30, new LocalDate(2016, 6, 13), new LocalTime(23, 55));
 
         returnList.add(duty1);
         returnList.add(duty2);
         returnList.add(duty3);
+        returnList.add(duty4);
+
+        FileHandler.getInstance().writeDuty(duty1);
+        FileHandler.getInstance().writeDuty(duty2);
+        FileHandler.getInstance().writeDuty(duty3);
+        FileHandler.getInstance().writeDuty(duty4);
 
         return returnList;
+    }
+
+
+    private void export(String filename){
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+            Log.e("Files", "Keine Permissions");
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            }else{
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9001);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 9001: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    FileHandler.getInstance().exportCSV("test", dutyArrayList);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     private ArrayList<Duty> importDutiesFromFileSystem() {
@@ -143,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
                     //panic
                 }
             }
-
         }
         else if(resultCode == RESULT_CANCELED){
             //do nothing
@@ -172,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
         }
 
         this.dutyArrayList.add(newDuty);
+        FileHandler.getInstance().writeDuty(newDuty);
     }
 
     protected void replaceExisitingDutyWithResultDuty(Intent result){
@@ -185,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
         this.dutyArrayList.get(index).setAbgabeTag(new LocalDate(result.getIntExtra("year", Calendar.getInstance().get(Calendar.YEAR)), result.getIntExtra("month", 0), result.getIntExtra("day", 0)));
         this.dutyArrayList.get(index).setAbgabeZeit(new LocalTime(result.getIntExtra("hour", 0), result.getIntExtra("minute", 0)));
         this.dutyArrayList.get(index).setBemerkung(result.getStringExtra("notes"));
-
 
     }
 

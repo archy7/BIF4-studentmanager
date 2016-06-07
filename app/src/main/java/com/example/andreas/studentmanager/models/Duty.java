@@ -3,19 +3,23 @@ package com.example.andreas.studentmanager.models;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Andreas on 03.06.2016.
  */
-public class Duty {
+public class Duty implements Serializable{
 
+    static final long serialVersionUID =1L;
+
+    private int dutyid;
     private String betreff;
     private String bemerkung;
     private int prio;
     private double aufwand;
 
-    private ArrayList<Duty> zwischenTermine;
+    private transient ArrayList<Duty> zwischenTermine;
 
     private LocalDate eingabeTag;
     private LocalTime eingabeZeit;
@@ -23,7 +27,7 @@ public class Duty {
     private LocalDate abgabeTag;
     private LocalTime abgabeZeit;
 
-    private Duty(){
+    public Duty(){
 
     }
 
@@ -38,9 +42,23 @@ public class Duty {
         this.eingabeZeit = LocalTime.now();
     }
 
-    public String getBetreff() {
-        return betreff;
+    public Duty(int dutyid, String betreff, int newprio, double aufwand, LocalDate abgabeTag, LocalTime abgabeZeit){
+        this.dutyid=dutyid;
+        this.betreff = betreff;
+        this.prio = newprio;
+        this.aufwand = aufwand;
+        this.abgabeTag = abgabeTag;
+        this.abgabeZeit = abgabeZeit;
+
+        this.eingabeTag = LocalDate.now();
+        this.eingabeZeit = LocalTime.now();
     }
+
+    public int getDutyid() { return dutyid; }
+
+    public void setDutyid(int dutyid) { this.dutyid = dutyid; }
+
+    public String getBetreff() { return betreff; }
 
     public void setBetreff(String betreff) {
         this.betreff = betreff;
@@ -107,4 +125,14 @@ public class Duty {
         return this.betreff + " fällig am " + this.abgabeTag.toString() + ", um " + this.abgabeZeit + "\n"
                 + "Priorität: " +Integer.toString(this.prio) + " Geschätzter Aufwand: " + Double.toString(this.aufwand) + " Stunden";
     }
+
+    @Override
+    public boolean equals(Object o){
+        if (o instanceof Duty) {
+            Duty d = (Duty)o;
+            return (this.dutyid == d.dutyid);
+        }
+        return false;
+    }
+
 }

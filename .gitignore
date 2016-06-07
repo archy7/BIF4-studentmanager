@@ -1,5 +1,6 @@
 *.iml
 .gradle
+gradle/2.10/taskArtifacts/cache.properties
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
