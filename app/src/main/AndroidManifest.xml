@@ -28,6 +28,11 @@
 
         <activity android:name=".AddDutyActivity" />
         <activity android:name=".ViewAndEditDutyActivity"></activity>
+        <activity
+            android:name=".UserSettingsActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <receiver android:name="com.example.andreas.studentmanager.core.NotificationPublisher"></receiver>
     </application>
 
 </manifest>

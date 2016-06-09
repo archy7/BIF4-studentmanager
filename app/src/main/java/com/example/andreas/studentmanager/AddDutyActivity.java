@@ -1,10 +1,19 @@
 package com.example.andreas.studentmanager;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,9 +26,11 @@ import android.widget.TimePicker;
 
 import com.example.andreas.studentmanager.pickers.DatePickerFragment;
 import com.example.andreas.studentmanager.pickers.TimePickerFragment;
+import com.example.andreas.studentmanager.core.NotificationPublisher;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 
 /**
  * Credit: http://stackoverflow.com/questions/15027987/how-to-read-timepicker-chosen-values
@@ -49,10 +60,25 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
     protected int pickerMonth = 0;
     protected int pickerYear = 0;
 
+    //Notification data
+    protected Calendar alarmStartTime = Calendar.getInstance();
+    int settings_prio;
+    int settings_reminder_first;
+    int settings_reminder_repeat;
+    Random randomGenerator = new Random();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_duty);
+
+        //Get the settings
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        settings_prio = Integer.parseInt(prefs.getString("PREF_PRIO", "5"));
+        settings_reminder_first = Integer.parseInt(prefs.getString("PREF_REMINDERFIRST", "7"));
+        settings_reminder_repeat = Integer.parseInt(prefs.getString("PREF_REMINDERREPEAT", "2"));
 
         prioSpinner = (Spinner) findViewById(R.id.prioSpinner);
         nameEditText = (EditText) findViewById(R.id.nameEditText);
@@ -81,7 +107,6 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
 
         //set Change Listeners for EditTexts
         //this.setChangeListeners();
-
     }
 
 
@@ -97,11 +122,9 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
 
     protected ArrayList<Integer> prioSchummeln(){
         ArrayList<Integer> integerArrayList = new ArrayList<>();
-        integerArrayList.add(1);
-        integerArrayList.add(2);
-        integerArrayList.add(3);
-        integerArrayList.add(4);
-        integerArrayList.add(5);
+        for(int i=1; i <= settings_prio; i++){
+            integerArrayList.add(i);
+        }
 
         return integerArrayList;
     }
@@ -131,6 +154,21 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
         resultIntent.putExtra("notes", this.notesEditText.getText().toString());
 
         setResult(RESULT_OK,resultIntent);
+
+        //Making the notification
+        String title = this.nameEditText.getText().toString();
+        StringBuilder mybuilder = new StringBuilder();
+        mybuilder.append("fällig am ");
+        mybuilder.append(this.pickerYear);
+        mybuilder.append("-");
+        mybuilder.append(this.pickerMonth);
+        mybuilder.append("-");
+        mybuilder.append(this.pickerDay);
+        mybuilder.append(", um ");
+        mybuilder.append(this.pickerHour);
+        mybuilder.append(":");
+        mybuilder.append(this.pickerMin);
+        scheduleNotification(getNotification(title, mybuilder.toString()));
         finish();
 
     }
@@ -216,6 +254,41 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         //Nothing
+    }
+
+    private void scheduleNotification(Notification notification) {
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        int randomInt = randomGenerator.nextInt(100000);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, randomInt);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+        alarmStartTime.set(this.pickerYear, this.pickerMonth, this.pickerDay, this.pickerHour, this.pickerMin);
+        alarmStartTime.add(Calendar.DAY_OF_MONTH, settings_reminder_first*(-1));
+        //Proof that notification is set for the right day
+        //System.out.println(alarmStartTime.get(Calendar.YEAR) +"-"+ alarmStartTime.get(Calendar.MONTH)+"-"+ alarmStartTime.get(Calendar.DAY_OF_MONTH));
+        int intervall = settings_reminder_repeat *24*60*60*1000;
+
+        alarmManager.setRepeating(AlarmManager.RTC, alarmStartTime.getTimeInMillis(), intervall, pendingIntent);
+
+        //For testing notification with 5 seconds after the event
+        //long futureInMillis = SystemClock.elapsedRealtime() + 5000;
+        //alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private Notification getNotification(String title, String content) {
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentTitle(title);
+        builder.setContentText(content);
+        builder.setSmallIcon(android.R.drawable.ic_menu_my_calendar);
+        builder.setContentIntent(resultPendingIntent);
+        return builder.build();
     }
 }
 

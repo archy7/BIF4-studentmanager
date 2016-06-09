@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="listentries_prio">
+        <item>3</item>
+        <item>5</item>
+        <item>7</item>
+    </string-array>
+    <string-array name="listvalues_prio">
+        <item>3</item>
+        <item>5</item>
+        <item>7</item>
+    </string-array>
+
+    <string-array name="listentries_reminderfirst">
+        <item>7 days</item>
+        <item>14 days</item>
+        <item>21 days</item>
+        <item>28 days</item>
+    </string-array>
+    <string-array name="listvalues_reminderfirst">
+        <item>7</item>
+        <item>14</item>
+        <item>21</item>
+        <item>28</item>
+    </string-array>
+
+    <string-array name="listentries_reminderrepeat">
+        <item>1 day</item>
+        <item>2 days</item>
+        <item>3 days</item>
+        <item>4 days</item>
+    </string-array>
+    <string-array name="listvalues_reminderrepeat">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+</resources>

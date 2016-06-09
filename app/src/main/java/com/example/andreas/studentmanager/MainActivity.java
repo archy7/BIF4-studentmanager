@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
 
     public final static int ADD_DUTY_REQUEST = 1;
     public final static int VIEW_AND_EDIT_DUTY_REQUEST = 2;
+    public final static int OPEN_SETTINGS_REQUEST = 3;
 
     public final static int EDIT_DUTY = 1;
     public final static int DELETE_DUTY = 2;
@@ -155,7 +156,8 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
     }
 
     public void openSettingsActivity(View view) {
-        //für Andi und seine Settings Dinge
+        Intent intent = new Intent(this, UserSettingsActivity.class);
+        startActivityForResult(intent, MainActivity.OPEN_SETTINGS_REQUEST);
     }
 
     @Override

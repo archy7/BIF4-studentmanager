@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="Number of priorities"
+        android:key="PREF_PRIO"
+        android:entries="@array/listentries_prio"
+        android:entryValues="@array/listvalues_prio"
+        android:defaultValue="5" />
+
+    <ListPreference
+        android:title="First reminder before duty"
+        android:key="PREF_REMINDERFIRST"
+        android:entries="@array/listentries_reminderfirst"
+        android:entryValues="@array/listvalues_reminderfirst"
+        android:defaultValue="7" />
+
+    <ListPreference
+        android:title="Repeating reminders"
+        android:key="PREF_REMINDERREPEAT"
+        android:entries="@array/listentries_reminderrepeat"
+        android:entryValues="@array/listvalues_reminderrepeat"
+        android:defaultValue="2" />
+</PreferenceScreen>
