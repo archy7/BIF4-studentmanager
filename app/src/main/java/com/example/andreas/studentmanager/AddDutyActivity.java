@@ -261,27 +261,24 @@ public class AddDutyActivity extends FragmentActivity implements TimePickerDialo
         int randomInt = randomGenerator.nextInt(100000);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, randomInt);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 
         alarmStartTime.set(this.pickerYear, this.pickerMonth, this.pickerDay, this.pickerHour, this.pickerMin);
         alarmStartTime.add(Calendar.DAY_OF_MONTH, settings_reminder_first*(-1));
+        int intervall = settings_reminder_repeat *24*60*60*1000;
+        //int intervall = 5000;
         //Proof that notification is set for the right day
         //System.out.println(alarmStartTime.get(Calendar.YEAR) +"-"+ alarmStartTime.get(Calendar.MONTH)+"-"+ alarmStartTime.get(Calendar.DAY_OF_MONTH));
-        int intervall = settings_reminder_repeat *24*60*60*1000;
 
         alarmManager.setRepeating(AlarmManager.RTC, alarmStartTime.getTimeInMillis(), intervall, pendingIntent);
-
-        //For testing notification with 5 seconds after the event
-        //long futureInMillis = SystemClock.elapsedRealtime() + 5000;
-        //alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 
     private Notification getNotification(String title, String content) {
         Intent resultIntent = new Intent(this, MainActivity.class);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = PendingIntent.getBroadcast(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(title);
