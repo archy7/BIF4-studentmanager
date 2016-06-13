@@ -115,7 +115,11 @@ public class MainActivity extends AppCompatActivity implements  AdapterView.OnIt
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             }else{
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9001);
+                Log.d("Files", "Export");
             }
+        }else{
+            Log.d("Files", "Permission existing");
+            FileHandler.getInstance().exportCSV("test", dutyArrayList);
         }
     }
 

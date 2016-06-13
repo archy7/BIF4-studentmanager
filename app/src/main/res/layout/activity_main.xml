@@ -41,7 +41,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginLeft="160dp"
             android:text="Export"
-            android:onClick="" />
+            android:onClick="exportDutiesToFileSystem" />
     </LinearLayout>
 
     <Button
